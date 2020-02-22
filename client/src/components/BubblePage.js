@@ -14,11 +14,11 @@ const BubblePage = () => {
     axiosWithAuth()
       .get('/colors')
       .then(res => {
-        console.log('[[SUCCESS]] App.js > BubblePage.js :: useState axiosWithAuth res == ', res);
+        console.log('[[GET]] [[SUCCESS]] App.js > BubblePage.js :: useState ~ axiosWithAuth res == ', res);
         setColorList(res.data);
       })
       .catch(err => {
-        console.log('[[ERROR]] App.js > BubblePage.js :: useState axiosWithAuth err == ', err);
+        console.log('[[GET]] [[ERROR]] App.js > BubblePage.js :: useState ~ axiosWithAuth err == ', err);
       })
   }, []);
 

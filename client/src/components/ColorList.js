@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 import axios from "axios";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 const initialColor = {
   color: "",
@@ -11,6 +13,8 @@ const ColorList = ({ colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
+  const history = useHistory();
+
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
@@ -21,6 +25,26 @@ const ColorList = ({ colors, updateColors }) => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    console.log(colorToEdit);
+    axiosWithAuth()
+      .put(`/colors/${colorToEdit.id}`, colorToEdit)
+      .then(res => {
+        // updateColors(res.data);
+        console.log('[[PUT]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth res == ', res);
+        axiosWithAuth()
+          .get('/colors')
+          .then(res => {
+            console.log('[[GET]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth ~ axiosWithAuth res == ', res);
+            updateColors(res.data);
+            setEditing(false);
+          })
+          .catch(err => {
+            console.log('[[GET]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth ~ axiosWithAuth err == ', err);
+          })
+      })
+      .catch(err => {
+        console.log('[[PUT]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth err == ', err);
+      })
   };
 
   const deleteColor = color => {
@@ -31,24 +55,27 @@ const ColorList = ({ colors, updateColors }) => {
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-        {colors.map(color => (
-          <li key={color.color} onClick={() => editColor(color)}>
-            <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
-              </span>{" "}
-              {color.color}
-            </span>
-            <div
-              className="color-box"
-              style={{ backgroundColor: color.code.hex }}
-            />
-          </li>
-        ))}
+        {colors.map(color => {
+          // console.log('Color Mapped: ', color);
+          return (
+            <li key={color.color} onClick={() => editColor(color)}>
+              <span>
+                <span className="delete" onClick={e => {
+                      e.stopPropagation();
+                      deleteColor(color)
+                    }
+                  }>
+                    x
+                </span>{" "}
+                {color.color}
+              </span>
+              <div
+                className="color-box"
+                style={{ backgroundColor: color.code.hex }}
+              />
+            </li>
+          );
+        })}
       </ul>
       {editing && (
         <form onSubmit={saveEdit}>
