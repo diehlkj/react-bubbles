@@ -29,7 +29,6 @@ const ColorList = ({ colors, updateColors }) => {
     axiosWithAuth()
       .put(`/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
-        // updateColors(res.data);
         console.log('[[PUT]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth res == ', res);
         axiosWithAuth()
           .get('/colors')
@@ -47,8 +46,26 @@ const ColorList = ({ colors, updateColors }) => {
       })
   };
 
-  const deleteColor = color => {
+  const deleteColor = e => {
     // make a delete request to delete this color
+    axiosWithAuth()
+      .delete(`/colors/${colorToEdit.id}`)
+      .then(res => {
+        console.log('[[DELETE]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: deleteColor ~ axiosWithAuth res == ', res);
+        axiosWithAuth()
+          .get('/colors')
+          .then(res => {
+            console.log('[[GET]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: deleteColor ~ axiosWithAuth ~ axiosWithAuth res == ', res);
+            updateColors(res.data);
+            setEditing(false);
+          })
+          .catch(err => {
+            console.log('[[GET]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: deleteColor ~ axiosWithAuth ~ axiosWithAuth err == ', err);
+          })
+      })
+      .catch(err => {
+        console.log('[[DELETE]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: deleteColor ~ axiosWithAuth err == ', err);
+      })
   };
 
   return (
@@ -103,6 +120,7 @@ const ColorList = ({ colors, updateColors }) => {
           </label>
           <div className="button-row">
             <button type="submit">save</button>
+            <button onClick={deleteColor}>delete</button>
             <button onClick={() => setEditing(false)}>cancel</button>
           </div>
         </form>
