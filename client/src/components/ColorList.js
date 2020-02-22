@@ -44,9 +44,9 @@ const ColorList = ({ colors, updateColors }) => {
       })
   };
 
-  const deleteColor = e => {
+  const deleteColor = color => {
     axiosWithAuth()
-      .delete(`/colors/${colorToEdit.id}`)
+      .delete(`/colors/${color.id}`)
       .then(res => {
         console.log('[[DELETE]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: deleteColor ~ axiosWithAuth res == ', res);
         axiosWithAuth()
@@ -117,7 +117,6 @@ const ColorList = ({ colors, updateColors }) => {
           </label>
           <div className="button-row">
             <button type="submit">save</button>
-            <button onClick={deleteColor}>delete</button>
             <button onClick={() => setEditing(false)}>cancel</button>
           </div>
         </form>
