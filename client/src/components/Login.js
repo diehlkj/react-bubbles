@@ -1,13 +1,25 @@
 import React from 'react';
-import axiosWithAuth from '../utils/AxiosWithAuth';
-import useForm from '../utils/useForm';
+import { useHistory } from 'react-router-dom';
+import { axiosWithAuth } from '../utils/axiosWithAuth';
+import { useForm } from '../utils/useForm';
 
 const Login = () => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
-  const formSubmitCallback = () => {
+  const history = useHistory();
 
+  const formSubmitCallback = () => {
+    axiosWithAuth()
+      .post('/login', values)
+      .then(res => {
+        localStorage.setItem('token', res.data.payload);
+        history.push('/bubblepage');
+      })
+      .catch(err => {
+        localStorage.removeItem('token');
+        console.log('Invalid login: ', err);
+      })
   };
 
   const [values, handleChanges, handleSubmit] = useForm({

@@ -6,7 +6,7 @@ export const useForm = (initialValue = {}, formSubmitCallback) => {
     // handles changes and state updating for any form input dynamically through its unique name and value. 
     const handleChanges = e => {
         e.preventDefault();
-        setValues({...calues, [e.target.name]: e.target.value});
+        setValues({...values, [e.target.name]: e.target.value});
     }
 
     // 'submits' form by triggering a callback function defined in the page the current instance of useForm is imported into
