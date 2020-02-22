@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
-import axios from "axios";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 const initialColor = {
@@ -9,11 +7,11 @@ const initialColor = {
 };
 
 const ColorList = ({ colors, updateColors }) => {
+
   console.log(colors);
+
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
-
-  const history = useHistory();
 
   const editColor = color => {
     setEditing(true);
@@ -22,14 +20,14 @@ const ColorList = ({ colors, updateColors }) => {
 
   const saveEdit = e => {
     e.preventDefault();
-    // Make a put request to save your updated color
-    // think about where will you get the id from...
-    // where is is saved right now?
+
     console.log(colorToEdit);
+
     axiosWithAuth()
       .put(`/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
         console.log('[[PUT]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth res == ', res);
+
         axiosWithAuth()
           .get('/colors')
           .then(res => {
@@ -47,7 +45,6 @@ const ColorList = ({ colors, updateColors }) => {
   };
 
   const deleteColor = e => {
-    // make a delete request to delete this color
     axiosWithAuth()
       .delete(`/colors/${colorToEdit.id}`)
       .then(res => {
