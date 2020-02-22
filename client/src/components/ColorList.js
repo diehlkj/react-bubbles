@@ -12,6 +12,7 @@ const ColorList = ({ colors, updateColors }) => {
 
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [colorToPost, setColorToPost] = useState(initialColor);
 
   const editColor = color => {
     setEditing(true);
@@ -21,7 +22,7 @@ const ColorList = ({ colors, updateColors }) => {
   const saveEdit = e => {
     e.preventDefault();
 
-    console.log(colorToEdit);
+    // console.log(colorToEdit);
 
     axiosWithAuth()
       .put(`/colors/${colorToEdit.id}`, colorToEdit)
@@ -41,6 +42,32 @@ const ColorList = ({ colors, updateColors }) => {
       })
       .catch(err => {
         console.log('[[PUT]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: saveEdit ~ axiosWithAuth err == ', err);
+      })
+  };
+
+  const saveNewColor = e => {
+    e.preventDefault();
+
+    console.log(colorToPost);
+
+    axiosWithAuth()
+      .post(`/colors`, colorToPost)
+      .then(res => {
+        console.log('[[POST]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: saveNewColor ~ axiosWithAuth res == ', res);
+
+        axiosWithAuth()
+          .get('/colors')
+          .then(res => {
+            console.log('[[GET]] [[SUCCESS]] App.js > BubblePage.js > ColorList.js :: saveNewColor ~ axiosWithAuth ~ axiosWithAuth res == ', res);
+            updateColors(res.data);
+            setEditing(false);
+          })
+          .catch(err => {
+            console.log('[[GET]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: saveNewColor ~ axiosWithAuth ~ axiosWithAuth err == ', err);
+          })
+      })
+      .catch(err => {
+        console.log('[[POST]] [[ERROR]] App.js > BubblePage.js > ColorList.js :: saveNewColor ~ axiosWithAuth err == ', err);
       })
   };
 
@@ -121,7 +148,35 @@ const ColorList = ({ colors, updateColors }) => {
           </div>
         </form>
       )}
-      <div className="spacer" />
+      <form onSubmit={saveNewColor}>
+          <legend>new color</legend>
+          <label>
+            color name:
+            <input
+              onChange={e =>
+                setColorToPost({ ...colorToPost, color: e.target.value })
+              }
+              value={colorToPost.color}
+            />
+          </label>
+          <label>
+            hex code:
+            <input
+              onChange={e =>
+                setColorToPost({
+                  ...colorToPost,
+                  code: { hex: e.target.value }
+                })
+              }
+              value={colorToPost.code.hex}
+            />
+          </label>
+          <div className="button-row">
+            <button type="submit">submit</button>
+            <button onClick={() => setColorToPost(initialColor)}>clear</button>
+          </div>
+        </form>
+      {/* <div className="spacer" /> */}
       {/* stretch - build another form here to add a color */}
     </div>
   );
